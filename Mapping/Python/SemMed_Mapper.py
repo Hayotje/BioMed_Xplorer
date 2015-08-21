@@ -6,6 +6,7 @@
 # University of Amsterdam
 
 # INSTRUCTIONS FOR DATABASE CONNECTION ARE BELOW
+# ONLY WORKS ON LINUX / OSX; FOR WINDOWS REPLACE ./dump-rdf WITH dump-rdf.bat
 
 __author__ = 'Hayo'
 
@@ -56,10 +57,12 @@ class SemMedMapper():
                                  "row in the MySQL result set. If no value is provided on the command line this defaults "
                                  "to 0.")
         parser.add_argument("--block_size",
+                            default=0,
                             type=int,
                             help="Defines the size of the blocks in which the MySQL table will be processed. A block "
                                  "size of 100, for example, indicates that in this run of the script 100 rows of the "
-                                 "MySQL table will be dumped to RDF.")
+                                 "MySQL table will be dumped to RDF. If no value is provided on the command line this "
+                                 "defaults to 0")
 
         self.args = parser.parse_args()
 
@@ -82,17 +85,20 @@ class SemMedMapper():
         # specified startIndex and blockSize to make processing more manageable
         query = ""
         if mapperMode == "citations":
-            query = "SELECT DISTINCT PMID FROM CITATIONS LIMIT " + str(startIndex) + ", " + str(blockSize)
+            query = "SELECT DISTINCT PMID FROM CITATIONS "
         elif mapperMode == "concepts":
-            query = "SELECT DISTINCT CUI FROM CONCEPT LIMIT " + str(startIndex) + ", " + str(blockSize)
+            query = "SELECT DISTINCT CUI FROM CONCEPT "
         elif mapperMode == "original_statement_object":
-            query = "SELECT DISTINCT o_cui FROM PREDICATION_AGGREGATE LIMIT " + str(startIndex) + ", " + str(blockSize)
+            query = "SELECT DISTINCT o_cui FROM PREDICATION_AGGREGATE "
         elif mapperMode == "original_statement_subject":
-            query = "SELECT DISTINCT s_cui FROM PREDICATION_AGGREGATE LIMIT " + str(startIndex) + ", " + str(blockSize)
+            query = "SELECT DISTINCT s_cui FROM PREDICATION_AGGREGATE "
         elif mapperMode == "sentences":
-            query = "SELECT DISTINCT SENTENCE_ID FROM SENTENCE LIMIT " + str(startIndex) + ", " + str(blockSize)
+            query = "SELECT DISTINCT SENTENCE_ID FROM SENTENCE "
         elif mapperMode == "statements":
-            query = "SELECT DISTINCT PID FROM PREDICATION_AGGREGATE LIMIT " + str(startIndex) + ", " + str(blockSize)
+            query = "SELECT DISTINCT PID FROM PREDICATION_AGGREGATE "
+
+        if blockSize != 0:
+            query = query + "LIMIT " + str(startIndex) + ", " + str(blockSize)
 
         print "Executing query: {0}".format(query)
 

@@ -51,7 +51,7 @@ class SemMedCaller():
                             help="Defines the size of the blocks in which the MySQL table will be processed. A block "
                                  "size of 100, for example, indicates that in this run of the script 100 rows of the "
                                  "MySQL table will be dumped to RDF. If no value is provided on the command line, "
-                                 "block size will default to -1 (indicating that the entire MySQL table will be "
+                                 "block size will default to 0 (indicating that the entire MySQL table will be "
                                  "processed at once.")
 
         self.args = parser.parse_args()
@@ -119,7 +119,7 @@ class SemMedCaller():
 
         # if the preferred blockSize is -1, we want to process the entire table at once and therefore we set the
         # blocksize to be equal to the number of items in the table
-        if blockSize == -1:
+        if blockSize == 0:
             blockSize = tableLength
 
         # the maximum index to / from which we can loop is determined by the tableLength divided by the blocklength
