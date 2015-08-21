@@ -1,0 +1,141 @@
+# Author: Hayo Bart
+# August 2015
+# Project: Information Graphs Modelling Diabetes Disease
+# MSc Information Studies 
+# Track: Business Information Systems
+# University of Amsterdam
+
+@prefix map: <#> .
+@prefix db: <> .
+@prefix vocab: <vocab/> .
+@prefix : <http://purl.org/net/fcnmed/> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix jdbc: <http://d2rq.org/terms/jdbc/> .
+@prefix d2r: <http://sites.wiwiss.fu-berlin.de/suhl/bizer/d2r-server/config.rdf#> .
+@prefix meta: <http://www4.wiwiss.fu-berlin.de/bizer/d2r-server/metadata#> .
+
+<> a d2r:Server;
+  rdfs:label "My D2R Server";
+  d2r:baseURI <http://localhost:2020/>;
+  d2r:port 2020;
+  d2r:vocabularyIncludeInstances true;
+  d2r:sparqlTimeout 300;
+  d2r:pageTimeout 300;
+  .
+
+# Replace database_name with the name of the database that contains the SemMedDB SQL dump
+# Replace database_user with the username of the database (e.g. root)
+# Replace database_password with the password of that user
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "com.mysql.jdbc.Driver";
+	d2rq:jdbcDSN "jdbc:mysql://localhost:3306/database_name";
+	d2rq:username "database_user";
+	d2rq:password "database_password";
+	jdbc:autoReconnect "true";
+	jdbc:zeroDateTimeBehavior "convertToNull";
+	.
+
+################# #################
+########                   ########
+######## CONCEPTS CLASSMAP ########
+########                   ########
+###################################
+	
+map:concept a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "concept/@@CONCEPT.CUI|urlify@@";
+	d2rq:class skos:Concept;
+	d2rq:classDefinitionLabel "concept";
+	.
+map:concept__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Concept with Concept ID @@CONCEPT.CONCEPT_ID@@, and CUI @@CONCEPT.CUI@@";
+	.
+map:concept_CONCEPT_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasConceptID;
+	d2rq:propertyDefinitionLabel "Concept ID (mapped from CONCEPT_ID)";
+	d2rq:column "CONCEPT.CONCEPT_ID";
+	d2rq:datatype xsd:integer;
+	.
+map:concept_CUI a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasCUI;
+	d2rq:propertyDefinitionLabel "Concept CUI (mapped from CUI)";
+	d2rq:column "CONCEPT.CUI";
+	d2rq:datatype rdfs:Literal;
+	.
+map:concept_PREFERRED_NAME a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasName;
+	d2rq:propertyDefinitionLabel "Concept name (mapped from PREFERRED_NAME)";
+	d2rq:column "CONCEPT.PREFERRED_NAME";
+	d2rq:datatype xsd:string;
+	.
+map:concept_GHR_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasGHRID;
+	d2rq:propertyDefinitionLabel "Concept Genetics Home Reference ID (if available; mapped from GHR)";
+	d2rq:column "CONCEPT.GHR";
+	d2rq:datatype rdfs:Literal;
+	.
+map:concept_OMIM_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasOMIMID;
+	d2rq:propertyDefinitionLabel "Concept Online Mendelian Inheritance in Man ID (if available; mapped from OMIM)";
+	d2rq:column "CONCEPT.OMIM";
+	d2rq:datatype xsd:integer;
+	.
+map:concept_Semantic_Type a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasSemanticType;
+	d2rq:propertyDefinitionLabel "Concept semantic type (mapped from Concept_Semtype.SEMTYPE)";
+	d2rq:column "CONCEPT_SEMTYPE.SEMTYPE";
+	d2rq:join "CONCEPT.CONCEPT_ID <= CONCEPT_SEMTYPE.CONCEPT_ID";
+	d2rq:datatype xsd:string;	
+	.
+map:concept_Indegree a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :indegree;
+	d2rq:sqlExpression "SELECT COUNT(DISTINCT PID) FROM PREDICATION_AGGREGATE WHERE o_cui = @@CONCEPT.CUI@@";
+	d2rq:propertyDefinitionLabel "The number of incoming edges to the concept (e.g. the number of statements / predications that have the concept as object)";
+	d2rq:datatype xsd:integer;
+	.
+#map:concept_Outdegree a d2rq:PropertyBridge;
+#	d2rq:belongsToClassMap map:concept;
+#	d2rq:property :outdegree;
+#	d2rq:sqlExpression "SELECT COUNT(DISTINCT PID) FROM PREDICATION_AGGREGATE WHERE s_cui = '@@CONCEPT.CUI@@'";
+#	d2rq:propertyDefinitionLabel "The number of outgoing edges from a concept (e.g. the number of statements / predications that have the concept as subject)";
+#	d2rq:datatype xsd:integer;
+#	.
+map:concept_sameAs_UMLS a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property owl:sameAs;
+	d2rq:propertyDefinitionLabel "OWL sameAs relation to link a UMLS concept to Linked Life Data";
+	d2rq:uriPattern "http://linkedlifedata.com/resource/umls/id/@@CONCEPT.CUI@@";
+	d2rq:condition "CONCEPT.TYPE = 'META'";
+	.
+map:concept_sameAs_ENTREZ a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property owl:sameAs;
+	d2rq:propertyDefinitionLabel "OWL sameAs relation to link a ENTREZ GENE concept to Linked Life Data";
+	d2rq:uriPattern "http://linkedlifedata.com/resource/entrezgene/id/@@CONCEPT.CUI@@";
+	d2rq:condition "CONCEPT.TYPE = 'ENTREZ'";
+	.
+map:concept_sameAs_OMIM a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property owl:sameAs;
+	d2rq:propertyDefinitionLabel "OWL sameAs relation to link a OMIM concept to BIO2RDF:OMIM";
+	d2rq:uriPattern "http://bio2rdf.org/omim:@@CONCEPT.OMIM@@";
+	d2rq:condition "CONCEPT.OMIM IS NOT NULL AND LENGTH(CONCEPT.OMIM) = 6";
+	.
+# What about type 'CT'?
+	

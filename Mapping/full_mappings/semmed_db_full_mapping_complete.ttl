@@ -1,0 +1,368 @@
+# Author: Hayo Bart
+# August 2015
+# Project: Information Graphs Modelling Diabetes Disease
+# MSc Information Studies 
+# Track: Business Information Systems
+# University of Amsterdam
+
+@prefix map: <#> .
+@prefix db: <> .
+@prefix vocab: <vocab/> .
+@prefix : <http://purl.org/net/fcnmed/> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix jdbc: <http://d2rq.org/terms/jdbc/> .
+@prefix d2r: <http://sites.wiwiss.fu-berlin.de/suhl/bizer/d2r-server/config.rdf#> .
+@prefix meta: <http://www4.wiwiss.fu-berlin.de/bizer/d2r-server/metadata#> .
+
+<> a d2r:Server;
+  rdfs:label "My D2R Server";
+  d2r:baseURI <http://localhost:2020/>;
+  d2r:port 2020;
+  d2r:vocabularyIncludeInstances true;
+  d2r:sparqlTimeout 300;
+  d2r:pageTimeout 300;
+  .
+
+# Replace database_name with the name of the database that contains the SemMedDB SQL dump
+# Replace database_user with the username of the database (e.g. root)
+# Replace database_password with the password of that user
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "com.mysql.jdbc.Driver";
+	d2rq:jdbcDSN "jdbc:mysql://localhost:3306/database_name";
+	d2rq:username "database_user";
+	d2rq:password "database_password";
+	jdbc:autoReconnect "true";
+	jdbc:zeroDateTimeBehavior "convertToNull";
+	.
+
+###################################
+########                   ########
+######## CONCEPTS CLASSMAP ########
+########                   ########
+###################################
+	
+map:concept a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "concept/@@CONCEPT.CUI|urlify@@";
+	d2rq:class skos:Concept;
+	d2rq:classDefinitionLabel "concept";
+	.
+map:concept__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Concept with Concept ID @@CONCEPT.CONCEPT_ID@@, and CUI @@CONCEPT.CUI@@";
+	.
+map:concept_CONCEPT_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasConceptID;
+	d2rq:propertyDefinitionLabel "Concept ID (mapped from CONCEPT_ID)";
+	d2rq:column "CONCEPT.CONCEPT_ID";
+	d2rq:datatype xsd:integer;
+	.
+map:concept_CUI a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasCUI;
+	d2rq:propertyDefinitionLabel "Concept CUI (mapped from CUI)";
+	d2rq:column "CONCEPT.CUI";
+	d2rq:datatype rdfs:Literal;
+	.
+map:concept_PREFERRED_NAME a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasName;
+	d2rq:propertyDefinitionLabel "Concept name (mapped from PREFERRED_NAME)";
+	d2rq:column "CONCEPT.PREFERRED_NAME";
+	d2rq:datatype xsd:string;
+	.
+map:concept_GHR_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasGHRID;
+	d2rq:propertyDefinitionLabel "Concept Genetics Home Reference ID (if available; mapped from GHR)";
+	d2rq:column "CONCEPT.GHR";
+	d2rq:datatype rdfs:Literal;
+	.
+map:concept_OMIM_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasOMIMID;
+	d2rq:propertyDefinitionLabel "Concept Online Mendelian Inheritance in Man ID (if available; mapped from OMIM)";
+	d2rq:column "CONCEPT.OMIM";
+	d2rq:datatype xsd:integer;
+	.
+map:concept_Semantic_Type a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property :hasSemanticType;
+	d2rq:propertyDefinitionLabel "Concept semantic type (mapped from Concept_Semtype.SEMTYPE)";
+	d2rq:column "CONCEPT_SEMTYPE.SEMTYPE";
+	d2rq:join "CONCEPT.CONCEPT_ID <= CONCEPT_SEMTYPE.CONCEPT_ID";
+	d2rq:datatype xsd:string;	
+	.
+map:concept_sameAs_UMLS a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property owl:sameAs;
+	d2rq:propertyDefinitionLabel "OWL sameAs relation to link a UMLS concept to Linked Life Data";
+	d2rq:uriPattern "http://linkedlifedata.com/resource/umls/id/@@CONCEPT.CUI@@";
+	d2rq:condition "CONCEPT.TYPE = 'META'";
+	.
+map:concept_sameAs_ENTREZ a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property owl:sameAs;
+	d2rq:propertyDefinitionLabel "OWL sameAs relation to link a ENTREZ GENE concept to Linked Life Data";
+	d2rq:uriPattern "http://linkedlifedata.com/resource/entrezgene/id/@@CONCEPT.CUI@@";
+	d2rq:condition "CONCEPT.TYPE = 'ENTREZ'";
+	.
+map:concept_sameAs_OMIM a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:concept;
+	d2rq:property owl:sameAs;
+	d2rq:propertyDefinitionLabel "OWL sameAs relation to link a OMIM concept to BIO2RDF:OMIM";
+	d2rq:uriPattern "http://bio2rdf.org/omim:@@CONCEPT.OMIM@@";
+	d2rq:condition "CONCEPT.OMIM IS NOT NULL AND LENGTH(CONCEPT.OMIM) = 6";
+	.	
+	
+#####################################################
+########                                     ########
+######## ORIGINAL STATEMENT SUBJECT CLASSMAP ########
+########                                     ########
+#####################################################
+
+map:originalStatementSubject a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "concept/@@PREDICATION_AGGREGATE.s_cui|urlify@@";
+	d2rq:class skos:Concept; 
+	d2rq:classDefinitionLabel "Concepts that are the subject of original statements";
+	.
+map:originalStatementSubject_originalPredicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementSubject;
+	d2rq:dynamicProperty "http://purl.org/net/fcnmed/relation/@@PREDICATION_AGGREGATE.predicate@@";
+	d2rq:uriPattern "http://purl.org/net/fcnmed/concept/@@PREDICATION_AGGREGATE.o_cui|urlify@@";
+	d2rq:propertyDefinitionLabel "Instance of the relation class, as property, representing the predicate in the relation between two concepts";
+	.
+map:originalStatementSubject_label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementSubject;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Unofficial Concept with CUI @@PREDICATION_AGGREGATE.s_cui@@";
+	d2rq:condition "PREDICATION_AGGREGATE.s_cui NOT IN (SELECT DISTINCT (CUI) FROM CONCEPT)";
+	.
+map:originalStatementSubject_CUI a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementSubject;
+	d2rq:property :hasCUI;
+	d2rq:propertyDefinitionLabel "Concept CUI (mapped from s_cui)";
+	d2rq:column "PREDICATION_AGGREGATE.s_cui";
+	d2rq:datatype rdfs:Literal;
+	.
+map:originalStatementSubject_PREFERRED_NAME a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementSubject;
+	d2rq:property :hasName;
+	d2rq:propertyDefinitionLabel "Concept name (mapped from s_name)";
+	d2rq:column "PREDICATION_AGGREGATE.s_name";
+	d2rq:datatype xsd:string;
+	.
+map:originalStatementSubject_Semantic_Type a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementSubject;
+	d2rq:property :hasSemanticType;
+	d2rq:propertyDefinitionLabel "Concept semantic type (mapped from s_type)";
+	d2rq:column "PREDICATION_AGGREGATE.s_type";
+	d2rq:datatype xsd:string;	
+	.
+
+####################################################
+########                                    ########
+######## ORIGINAL STATEMENT OBJECT CLASSMAP ########
+########                                    ########
+####################################################
+
+map:originalStatementObject a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "concept/@@PREDICATION_AGGREGATE.o_cui|urlify@@";
+	d2rq:class skos:Concept;
+	d2rq:classDefinitionLabel "Concepts that are the object of original statements";
+	.
+map:originalStatementObject_label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementObject;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Unofficial Concept with CUI @@PREDICATION_AGGREGATE.o_cui@@";
+	d2rq:condition "PREDICATION_AGGREGATE.o_cui NOT IN (SELECT DISTINCT (CUI) FROM CONCEPT)";
+	.
+map:originalStatementObject_CUI a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementObject;
+	d2rq:property :hasCUI;
+	d2rq:propertyDefinitionLabel "Concept CUI (mapped from o_cui)";
+	d2rq:column "PREDICATION_AGGREGATE.o_cui";
+	d2rq:datatype rdfs:Literal;
+	.
+map:originalStatementObject_PREFERRED_NAME a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementObject;
+	d2rq:property :hasName;
+	d2rq:propertyDefinitionLabel "Concept name (mapped from o_name)";
+	d2rq:column "PREDICATION_AGGREGATE.o_name";
+	d2rq:datatype xsd:string;
+	.
+map:originalStatementObject_Semantic_Type a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:originalStatementObject;
+	d2rq:property :hasSemanticType;
+	d2rq:propertyDefinitionLabel "Concept semantic type (mapped from o_type)";
+	d2rq:column "PREDICATION_AGGREGATE.o_type";
+	d2rq:datatype xsd:string;	
+	.
+	
+####################################
+########                    ########
+######## CITATIONS CLASSMAP ########
+########                    ########
+####################################
+
+map:academic_articles a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "citations/@@CITATIONS.PMID@@";
+	d2rq:class bibo:AcademicArticle;
+	d2rq:classDefinitionLabel "Academic Articles";
+	.
+map:academic_articles__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:academic_articles;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Academic Article with PMID @@CITATIONS.PMID@@";
+	.
+map:academic_articles_PMID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:academic_articles;
+	d2rq:property bibo:pmid;
+	d2rq:propertyDefinitionLabel "Article PubMed ID (mapped from PMID)";
+	d2rq:column "CITATIONS.PMID";
+	.
+map:academic_articles_ISSN a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:academic_articles;
+	d2rq:property bibo:issn;
+	d2rq:propertyDefinitionLabel "Article ISSN (mapped from ISSN)";
+	d2rq:column "CITATIONS.ISSN";
+	.
+map:academic_articles_pubYear a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:academic_articles;
+	d2rq:property :publicationYear;
+	d2rq:propertyDefinitionLabel "The year in which an academic article has been published";
+	d2rq:sqlExpression "SUBSTRING(DP, 1, 4)";
+	d2rq:datatype xsd:integer;
+	.
+map:academic_articles_pubMonth a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:academic_articles;
+	d2rq:property :publicationMonth;
+	d2rq:propertyDefinitionLabel "The month in which an academic article has been published";
+	d2rq:sqlExpression "SELECT MONTH(STR_TO_DATE(CONCAT(SUBSTRING(DP, 6, 3), ' 11,', ' 2015'), '%M %d, %Y'))";
+	d2rq:datatype xsd:integer;
+	.
+map:academic_articles_sameAs a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:academic_articles;
+	d2rq:property owl:sameAs;
+	d2rq:propertyDefinitionLabel "OWL sameAs relation to publication in BIO2RDF";
+	d2rq:uriPattern "http://bio2rdf.org/pubmed:@@CITATIONS.PMID@@";
+	.
+	
+###################################
+########                   ########
+######## SENTENCE CLASSMAP ########
+########                   ########
+###################################
+
+map:sentence a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "sentence/@@SENTENCE.SENTENCE_ID@@";
+	d2rq:class :Sentence;
+	d2rq:classDefinitionLabel "Sentence";
+	.
+map:sentence__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Sentence with Sentence_ID @@SENTENCE.SENTENCE_ID@@";
+	.
+map:sentence_SENTENCE_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :hasSentenceID;
+	d2rq:propertyDefinitionLabel "Sentence ID (mapped from SENTENCE_ID)";
+	d2rq:column "SENTENCE.SENTENCE_ID";
+	d2rq:datatype xsd:integer;
+	.
+map:sentence_PMID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property dc:isPartOf;
+	d2rq:uriPattern "http://purl.org/net/fcnmed/citations/@@SENTENCE.PMID@@";
+	d2rq:propertyDefinitionLabel "Object property associating the sentence with the publication of which it is a part (via PMID)";
+	.
+map:sentence_SENTENCE a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :content;
+	d2rq:propertyDefinitionLabel "The actual sentence (mapped from SENTENCE)";
+	d2rq:column "SENTENCE.SENTENCE";
+	d2rq:datatype xsd:string;
+	.
+map:sentence_SENTENCE_POSITION a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :sentencePosition;
+	d2rq:propertyDefinitionLabel "The position of the sentence in the title or abstract (mapped from NUMBER)";
+	d2rq:column "SENTENCE.NUMBER";
+	d2rq:datatype xsd:integer;
+	.
+map:sentence_SENTENCE_LOCATION a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :sentenceLocation;
+	d2rq:propertyDefinitionLabel "The location of the sentence (either from title or abstract; mapped from TYPE)";
+	d2rq:column "SENTENCE.TYPE";
+	d2rq:datatype rdfs:Literal;
+	.
+	
+####################################
+########                    ########
+######## STATEMENT CLASSMAP ########
+########                    ########
+####################################
+
+map:statement a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "statement/@@PREDICATION_AGGREGATE.PID@@";
+	d2rq:class rdf:Statement;
+	d2rq:classDefinitionLabel "Statement representing an association between two concepts";
+	.
+map:statement__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:statement;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Statement with Statement ID @@PREDICATION_AGGREGATE.PID@@";
+	.
+map:statement_PID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:statement;
+	d2rq:property :hasStatementID;
+	d2rq:propertyDefinitionLabel "Statement ID (mapped from PID)";
+	d2rq:column "PREDICATION_AGGREGATE.PID";
+	d2rq:datatype xsd:integer;
+	.
+map:statement_SID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:statement;
+	d2rq:property :derivedFrom;
+	d2rq:uriPattern "http://purl.org/net/fcnmed/sentence/@@PREDICATION_AGGREGATE.SID@@";
+	d2rq:propertyDefinitionLabel "Object property referring to the sentence from which the statement is derived";
+	.
+map:statement_PMID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:statement;
+	d2rq:property dc:source;
+	d2rq:uriPattern "http://purl.org/net/fcnmed/citations/@@PREDICATION_AGGREGATE.PMID@@";
+	d2rq:propertyDefinitionLabel "Object property referring to the academic article (source) of the statement";
+	.
+map:statement_predicate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:statement;
+	d2rq:property rdf:predicate;
+	d2rq:propertyDefinitionLabel "Object property associating the predicate of the association with the statement";
+	d2rq:uriPattern "http://purl.org/net/fcnmed/relation/@@PREDICATION_AGGREGATE.predicate@@";
+	.
+map:statement_s_cui a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:statement;
+	d2rq:property rdf:subject;
+	d2rq:uriPattern "http://purl.org/net/fcnmed/concept/@@PREDICATION_AGGREGATE.s_cui|urlify@@";
+	d2rq:propertyDefinitionLabel "Object property associating the subject concept of the association with the statement";
+	.
+map:statement_o_cui a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:statement;
+	d2rq:property rdf:object;
+	d2rq:uriPattern "http://purl.org/net/fcnmed/concept/@@PREDICATION_AGGREGATE.o_cui|urlify@@";
+	d2rq:propertyDefinitionLabel "Object property associating the object of the association with the statement";
+	.

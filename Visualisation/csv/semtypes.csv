@@ -1,0 +1,136 @@
+fullName;abbreviation;category
+Acquired Abnormality;acab;Disorders
+Activity;acty;Activities & Behaviors
+Age Group;aggp;Living Beings
+Alga ;alga;Living Beings
+Amino Acid Sequence;amas;Genes & Molecular Sequences
+Amino Acid, Peptide, or Protein;aapp;Chemicals & Drugs
+Amphibian;amph;Living Beings
+Anatomical Abnormality;anab;Disorders
+Anatomical Structure;anst;Anatomy
+Animal;anim;Living Beings
+Antibiotic;antb;Chemicals & Drugs
+Archaeon;arch;Living Beings
+Bacterium;bact;Living Beings
+Behavior;bhvr;Activities & Behaviors
+Biologic Function;biof;Phenomena
+Biologically Active Substance;bacs;Chemicals & Drugs
+Biomedical Occupation or Discipline;bmod;Occupations
+Biomedical or Dental Material;bodm;Chemicals & Drugs
+Bird;bird;Living Beings
+Body Location or Region;blor;Anatomy
+Body Part, Organ, or Organ Component;bpoc;Anatomy
+Body Space or Junction;bsoj;Anatomy
+Body Substance;bdsu;Anatomy
+Body System;bdsy;Anatomy
+Carbohydrate Sequence;crbs;Genes & Molecular Sequences
+Carbonhydrate;carb;Chemicals & Drugs
+Cell;cell;Anatomy
+Cell Component;celc;Anatomy
+Cell Function;celf;Physiology
+Cell or Molecular Dysfunction;comd;Disorders
+Chemical;chem;Chemicals & Drugs
+Chemical Viewed Functionally;chvf;Chemicals & Drugs
+Chemical Viewed Structurally;chvs;Chemicals & Drugs
+Classification;clas;Concepts & Ideas
+Clinical Attribute;clna;Physiology
+Clinical Drug;clnd;Chemicals & Drugs
+Conceptual Entity;cnce;Concepts & Ideas
+Congenital Abonormality;cgab;Disorders
+Daily or Recreational Activity;dora;Activities & Behaviors
+Diagnostic Procedure;diap;Procedures
+Disease or Syndrome;dsyn;Disorders
+Drug Delivery Device;drdd;Devices
+Educational Activity;edac;Procedures
+Eicosanoid;eico;Chemicals & Drugs
+Element, Ion, or Isotope;elii;Chemicals & Drugs
+Embryonic Structure;emst;Anatomy
+Entity;enty;Objects
+Environmental Effect of Humans;eehu;Phenomena
+Enzyme;enzy;Chemicals & Drugs
+Event;evnt;Activities & Behaviors
+Experimental Model of Disease;emod;Disorders
+Family Group;famg;Living Beings
+Finding;fndg;Disorders
+Fish;fish;Living Beings
+Food;food;Objects
+Fully Formed Anatomical Structure;ffas;Anatomy
+Functional Concept;ftcn;Concepts & Ideas
+Fungus;fngs;Living Beings
+Gene or Genome;gngm;Genes & Molecular Sequences
+Genetic Function;genf;Physiology
+Geographic Area;geoa;Geographic Areas
+Governmental or Regulatory Activity;gora;Activities & Behaviors
+Group;grup;Living Beings
+Group Attribute;grpa;Concepts & Ideas
+Hazardous or Poisonous Substance;hops;Chemicals & Drugs
+Health Care Activity;hlca;Procedures
+Health Care Related Organization;hcro;Organizations
+Hormone;horm;Chemicals & Drugs
+Human;humn;Living Beings
+Human-caused Phenomenon or Process;hcpp;Phenomena
+Idea or Concept;idcn;Concepts & Ideas
+Immunologic Factor;imft;Chemicals & Drugs
+Indicator, Reagent, or Diagnostic Aid;irda;Chemicals & Drugs
+Individual Behavior;inbe;Activities & Behaviors
+Injury or Poisoning;inpo;Disorders
+Inorganic Chemical;inch;Chemicals & Drugs
+Intellectual Product;inpr;Concepts & Ideas
+Laboratory or Test Result;lbtr;Phenomena
+Laboratory Procedure;lbpr;Procedures
+Language;lang;Concepts & Ideas
+Lipid;lipd;Chemicals & Drugs
+Machine Activity;mcha;Activities & Behaviors
+Mammal;mamm;Living Beings
+Manufactured Object;mnob;Objects
+Medical Device;medd;Devices
+Mental or Behavioral Dysfunction;mobd;Disorders
+Mental Process;menp;Physiology
+Molecular Biology Research Technique;mbrt;Procedures
+Molecular Function;moft;Physiology
+Molecular Sequence;mosq;Genes & Molecular Sequences
+Natural Phenomenon or Process;npop;Phenomena
+Neoplastic Process;neop;Disorders
+Neuroreactive Substance or Biogenic Amine;nsba;Chemicals & Drugs
+Nucleic Acid, Nucleoside, or Nucleotide;nnon;Chemicals & Drugs
+Nucleotide Sequence;nusq;Genes & Molecular Sequences
+Occupation or Discipline;ocdi;Occupations
+Occupational Activity;ocac;Activities & Behaviors
+Organ or Tissue Function;ortf;Physiology
+Organic Chemical;orch;Chemicals & Drugs
+Organism;orgm;Living Beings
+Organism Attribute;orga;Physiology
+Organism Function;orgf;Physiology
+Organization;orgt;Organizations
+Organophosphorus Compound;opco;Chemicals & Drugs
+Pathologic Function;patf;Disorders
+Patient or Disabled Group;podg;Living Beings
+Pharmacologic Substance;phsu;Chemicals & Drugs
+Phenomenon or Process;phpr;Phenomena
+Physical Object;phob;Objects
+Physiologic Function;phsf;Physiology
+Plant;plnt;Living Beings
+Population Group;popg;Living Beings
+Professional or Occupational Group;prog;Living Beings
+Professional Society;pros;Organizations
+Qualitative Concept;qlco;Concepts & Ideas
+Quantitative Concept;qnco;Concepts & Ideas
+Receptor;rcpt;Chemicals & Drugs
+Regulation or Law;rnlw;Concepts & Ideas
+Reptile;rept;Living Beings
+Research Activity;resa;Procedures
+Research Device;resd;Devices
+Rickettsia or Chlamydia;rich;Living Beings
+Self-help or Relief Organization;shro;Organizations
+Sign or Symptom;sosy;Disorders
+Social Behavior;socb;Activities & Behaviors
+Spatial Concept;spco;Concepts & Ideas
+Steroid;strd;Chemicals & Drugs
+Substance;sbst;Objects
+Temporal Concept;tmco;Concepts & Ideas
+Therapeutic or Preventive Procedure;topp;Procedures
+Tissue;tisu;Anatomy
+Vertebrate;vtbt;Living Beings
+Virus;virs;Living Beings
+Vitamin;vita;Chemicals & Drugs
+Invertebrate;invt;Living Beings

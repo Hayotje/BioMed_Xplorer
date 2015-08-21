@@ -1,0 +1,95 @@
+# Author: Hayo Bart
+# August 2015
+# Project: Information Graphs Modelling Diabetes Disease
+# MSc Information Studies 
+# Track: Business Information Systems
+# University of Amsterdam
+
+@prefix map: <#> .
+@prefix db: <> .
+@prefix vocab: <vocab/> .
+@prefix : <http://purl.org/net/fcnmed/> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix jdbc: <http://d2rq.org/terms/jdbc/> .
+@prefix d2r: <http://sites.wiwiss.fu-berlin.de/suhl/bizer/d2r-server/config.rdf#> .
+@prefix meta: <http://www4.wiwiss.fu-berlin.de/bizer/d2r-server/metadata#> .
+
+<> a d2r:Server;
+  rdfs:label "My D2R Server";
+  d2r:baseURI <http://localhost:2020/>;
+  d2r:port 2020;
+  d2r:vocabularyIncludeInstances true;
+  d2r:sparqlTimeout 300;
+  d2r:pageTimeout 300;
+  .
+
+# Replace database_name with the name of the database that contains the SemMedDB SQL dump
+# Replace database_user with the username of the database (e.g. root)
+# Replace database_password with the password of that user
+map:database a d2rq:Database;
+	d2rq:jdbcDriver "com.mysql.jdbc.Driver";
+	d2rq:jdbcDSN "jdbc:mysql://localhost:3306/database_name";
+	d2rq:username "database_user";
+	d2rq:password "database_password";
+	jdbc:autoReconnect "true";
+	jdbc:zeroDateTimeBehavior "convertToNull";
+	.
+
+###################################
+########                   ########
+######## SENTENCE CLASSMAP ########
+########                   ########
+###################################
+
+map:sentence a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "sentence/@@SENTENCE.SENTENCE_ID@@";
+	d2rq:class :Sentence;
+	d2rq:classDefinitionLabel "Sentence";
+	.
+map:sentence__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property rdfs:label;
+	d2rq:pattern "Sentence with Sentence_ID @@SENTENCE.SENTENCE_ID@@";
+	.
+map:sentence_SENTENCE_ID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :hasSentenceID;
+	d2rq:propertyDefinitionLabel "Sentence ID (mapped from SENTENCE_ID)";
+	d2rq:column "SENTENCE.SENTENCE_ID";
+	d2rq:datatype xsd:integer;
+	.
+map:sentence_PMID a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property dc:isPartOf;
+	d2rq:uriPattern "http://purl.org/net/fcnmed/citations/@@SENTENCE.PMID@@";
+	d2rq:propertyDefinitionLabel "Object property associating the sentence with the publication of which it is a part (via PMID)";
+	.
+map:sentence_SENTENCE a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :content;
+	d2rq:propertyDefinitionLabel "The actual sentence (mapped from SENTENCE)";
+	d2rq:column "SENTENCE.SENTENCE";
+	d2rq:datatype xsd:string;
+	.
+map:sentence_SENTENCE_POSITION a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :sentencePosition;
+	d2rq:propertyDefinitionLabel "The position of the sentence in the title or abstract (mapped from NUMBER)";
+	d2rq:column "SENTENCE.NUMBER";
+	d2rq:datatype xsd:integer;
+	.
+map:sentence_SENTENCE_LOCATION a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:sentence;
+	d2rq:property :sentenceLocation;
+	d2rq:propertyDefinitionLabel "The location of the sentence (either from title or abstract; mapped from TYPE)";
+	d2rq:column "SENTENCE.TYPE";
+	d2rq:datatype rdfs:Literal;
+	.

@@ -1,0 +1,9 @@
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} ^localhost/~frankhouweling/semmeddb/Cache
+RewriteRule (.*) http://localhost/~frankhouweling/semmeddb/Cache/$1 [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !\.(?:jpe?g|gif|bmp|png|tiff|css|js)$ [NC]
+RewriteRule (.*) index.php/$1 [L]
