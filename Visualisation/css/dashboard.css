@@ -1,3 +1,10 @@
+/*Author: Hayo Bart*/
+/*August 2015*/
+/*Project: Information Graphs Modelling Diabetes Disease*/
+/*MSc Information Studies*/
+/*Track: Business Information Systems*/
+/*University of Amsterdam*/
+
 /* sidebar styling */
 #sidebar {
     display: none;
@@ -105,6 +112,10 @@ foreignObject .wrapped {
 g.node circle, #categorylegend circle {
     stroke: #aea79f;
     stroke-width: 1px;
+}
+
+g.node circle, .link {
+    cursor: pointer;
 }
 
 .panel {

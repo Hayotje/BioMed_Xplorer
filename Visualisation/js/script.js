@@ -1,6 +1,9 @@
-/**
- * Created by Hayo on 7-7-2015.
- */
+//Author: Hayo Bart
+//August 2015
+//Project: Information Graphs Modelling Diabetes Disease
+//MSc Information Studies
+//Track: Business Information Systems
+//University of Amsterdam
 
 // hide the concept- and linkdetail boxes on pageload, since they aren't supposed to show anything
 $("#conceptdetails").hide();
@@ -21,7 +24,7 @@ var loadSemTypeCSV = once(function() {
     // parse the file
     dsv("./csv/semtypes.csv", function(error, data)
     {
-        console.log("complete")
+        //console.log("complete")
         // store the data in a global variable such that it is available outside the function
         semTypeJSON = data;
 
@@ -83,7 +86,7 @@ function initializeSVG()
 function redraw() {
     // console.log("here", d3.event.translate, d3.event.scale);
     svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
-    console.log(d3.event.translate, d3.event.scale)
+    //console.log(d3.event.translate, d3.event.scale)
 }
 
 function getStatements(queryCUI, clickCount)
@@ -209,7 +212,7 @@ function ajaxStatements(queryCUI, mode, clickCount)
         //"} " +
         //"} ";
 
-    console.log(sparqlQuery);
+    //console.log(sparqlQuery);
 
     var queryParameters =
     {
@@ -233,7 +236,7 @@ function ajaxStatements(queryCUI, mode, clickCount)
     }
 
     var endpointURL = endpointBaseURL + endpointQueryURL;
-    console.log(endpointURL);
+    //console.log(endpointURL);
 
     return $.ajax(
             {
@@ -261,13 +264,10 @@ function ajaxStatements(queryCUI, mode, clickCount)
 
 function getNodes(statements)
 {
-    console.log("Ajax request completed");
+    //console.log("Ajax request completed");
 
     for (var i = 0; i < statements.length; i++)
     {
-
-        console.log(i);
-
         var subjectNodeIndex = getIndex("CUI", statements[i]["subjectCUI"]["value"], nodes);
         var objectNodeIndex = getIndex("CUI", statements[i]["objectCUI"]["value"], nodes);
 
@@ -377,7 +377,7 @@ function getLinks(graphJSON)
             var predicateURI = graphJSON[i]["predicate"]["value"];
             var predicate = predicateURI.substring(predicateURI.lastIndexOf("/") + 1).replace("_", " ").toLowerCase();
 
-            console.log("source concept " + sourceConcept + "; target concept " + targetConcept)
+            //console.log("source concept " + sourceConcept + "; target concept " + targetConcept)
 
             var sourceIndex = getIndex("CUI", sourceConcept, nodes);
             var targetIndex = getIndex("CUI", targetConcept, nodes);
@@ -505,7 +505,7 @@ function draw(nodes, links)
                 {
                     // reset the "clicked" status of all nodes (to false) before assigning true to the clickedElement's
                     // clicked attribute
-                    d3.selectAll(".node circle").each(function(d) {console.log(d); return d.clicked = false;});
+                    d3.selectAll(".node circle").each(function(d) {return d.clicked = false;});
 
                     // reset the "clicked" status of all links (to false) before assigning true to the clickedElement's
                     // clicked attribute
@@ -537,9 +537,6 @@ function draw(nodes, links)
             // set singleClick to false
             singleClick = false;
 
-            // trigger the appropriate action
-            doDoubleClickAction();
-
             d.clickCount += 1;
             d.expanded = true;
 
@@ -568,7 +565,7 @@ function draw(nodes, links)
                 // loop through the nodes that need to be collapsed and collapse each of them
                 for (var node in collapseList)
                 {
-                    console.log(collapseList[node])
+                    //console.log(collapseList[node])
                     collapseNode(collapseList[node]);
                 }
 
@@ -655,7 +652,7 @@ function generateMarker()
 
 function setNodeToolTip()
 {
-    console.log("setting up tooltip")
+    //console.log("setting up tooltip")
     nodeToolTip = d3.tip()
                     .attr("class", "d3-tip")
                     .html(function(d) {return "<span>" + titleCaseConversion(d.conceptName) + "</span>"})
@@ -717,8 +714,8 @@ function setLinkToolTip()
 
 function addNode(nodePosition, graphJSON, subjectOrObject)
 {
-    console.log("node with this CUI does not yet exist");
-    console.log(subjectOrObject);
+    //console.log("node with this CUI does not yet exist");
+    //console.log(subjectOrObject);
 
     var invSubjectOrObject;
     if (subjectOrObject == "subject")
@@ -765,7 +762,7 @@ function addNode(nodePosition, graphJSON, subjectOrObject)
      */
     //tempNode.indegree = graphJSON[nodePosition][subjectOrObject + "Indegree"]["value"];
     //tempNode.outdegree = graphJSON[nodePosition][subjectOrObject + "Outdegree"]["value"];
-    console.log(tempNode);
+    //console.log(tempNode);
 
     nodes.push(tempNode);
 }
@@ -919,12 +916,12 @@ function generateSideBarLinkDetails(clickedElement)
                     sideBarDetails = handleSingleRowJSON(responseLCC[0], sideBarDetails);
                     sideBarDetails = handleSingleRowJSON(responseLSC[0], sideBarDetails);
 
-                    console.log(sideBarDetails);
+                    //console.log(sideBarDetails);
 
                     populateSideBarLink(sideBarDetails);
 
-                    console.log("Click registered;")
-                    console.log(sideBarDetails);
+                    //console.log("Click registered;")
+                    //console.log(sideBarDetails);
                     generateLinkModal(clickedElement, sideBarDetails);
 
                 })
@@ -932,8 +929,6 @@ function generateSideBarLinkDetails(clickedElement)
 
 function populateSideBarLink(sideBarDetails)
 {
-    console.log("Do I get triggered?")
-
     // before injecting the new html we should actually empty the contents of the .detailstext elements and delete
     // the source- and targetHeaders as those are injected on the fly.
     d3.selectAll("#linkdetails > p.detailstext").html("");
@@ -985,8 +980,6 @@ function populateSideBarLink(sideBarDetails)
                   .attr("data-target", "#linkdetailsmodal")
                   .html("Show Details");
 
-    console.log("do I get here?")
-
     $("#sidebar_loader").hide();
     $("#linkdetails").show();
     $("#accordion").show();
@@ -1028,9 +1021,6 @@ function populateSideBarLink(sideBarDetails)
 
 function handleLinkObject(sideBarDetails, property, mode)
 {
-
-    console.log("Hello")
-
     mode = typeof mode !== 'undefined' ?  mode : "";
 
     for(var key in sideBarDetails[property])
@@ -1062,7 +1052,7 @@ function handleLinkObject(sideBarDetails, property, mode)
                     htmlHeaderInsert = property.charAt(0).toUpperCase() + property.slice(1) + "<span></span>";
                 }
 
-                console.log(htmlHeaderInsert)
+                //console.log(htmlHeaderInsert)
 
                 linkDetails.insert("h4", "#" + mode + property + key)
                            .attr("class", mode + "header")
@@ -1139,7 +1129,7 @@ function generateSideBarConceptDetails(clickedElement)
         sideBarDetails.conceptID = clickedElement.conceptID;
     }
 
-    console.log("enter generateSideBarDetails")
+    //console.log("enter generateSideBarDetails")
     $.when(ajaxMissingConceptDetails(clickedElement.CUI))
         .then(function(response)
                 {
@@ -1162,10 +1152,10 @@ function generateSideBarConceptDetails(clickedElement)
                             }
                         }
 
-                        console.log(ajaxCalls)
+                        //console.log(ajaxCalls)
 
                         $.when.apply($, ajaxCalls).then(function () {
-                                                        console.log(arguments);
+                                                        //console.log(arguments);
 
                                                         if (ajaxCalls.length == 1) {
 
@@ -1193,7 +1183,7 @@ function generateSideBarConceptDetails(clickedElement)
                                                             });
                                                         }
 
-                                                        console.log(sideBarDetails);
+                                                        //console.log(sideBarDetails);
 
                                                         populateSideBarConcept(sideBarDetails, clickedElement);
 
@@ -1248,13 +1238,13 @@ function generateSideBarConceptDetails(clickedElement)
 
                 });
 
-    console.log("single click registered")
+    //console.log("single click registered")
 }
 
 function ajaxMissingConceptDetails(conceptCUI)
 {
 
-    console.log("enter getMissingConceptDetails")
+    //console.log("enter getMissingConceptDetails")
 
     var sparqlQuery = "PREFIX : <http://purl.org/net/fcnmed/> " +
 
@@ -1278,7 +1268,7 @@ function ajaxMissingConceptDetails(conceptCUI)
             "}" +
         "}";
 
-    console.log(sparqlQuery);
+    //console.log(sparqlQuery);
 
     var queryParameters =
     {
@@ -1301,9 +1291,9 @@ function ajaxMissingConceptDetails(conceptCUI)
     }
 
     var endpointURL = endpointBaseURL + endpointQueryURL;
-    console.log(endpointURL)
+    //console.log(endpointURL)
 
-    console.log("returning $.ajax")
+    //console.log("returning $.ajax")
 
     return $.ajax(
         {
@@ -1330,7 +1320,7 @@ function ajaxMissingConceptDetails(conceptCUI)
 function ajaxLinkedLifeData(conceptURI)
 {
 
-    console.log("enter ajaxLinkedLifeData")
+    //console.log("enter ajaxLinkedLifeData")
 
     var sparqlQuery =
 
@@ -1352,7 +1342,7 @@ function ajaxLinkedLifeData(conceptURI)
             "} " +
         "}";
 
-    console.log(sparqlQuery);
+    //console.log(sparqlQuery);
 
     var queryParameters =
     {
@@ -1375,9 +1365,9 @@ function ajaxLinkedLifeData(conceptURI)
     }
 
     var endpointURL = endpointBaseURL + endpointQueryURL;
-    console.log(endpointURL)
+    //console.log(endpointURL)
 
-    console.log("returning $.ajax")
+    //console.log("returning $.ajax")
 
     return $.ajax(
         {
@@ -1404,7 +1394,7 @@ function ajaxLinkedLifeData(conceptURI)
 function ajaxBio2RDF(conceptOmimURI)
 {
 
-    console.log("enter ajaxBio2RDF")
+    //console.log("enter ajaxBio2RDF")
 
     var sparqlQuery =
 
@@ -1497,7 +1487,7 @@ function ajaxBio2RDF(conceptOmimURI)
 
         "}";
 
-    console.log(sparqlQuery);
+    //console.log(sparqlQuery);
 
     var queryParameters =
     {
@@ -1520,9 +1510,9 @@ function ajaxBio2RDF(conceptOmimURI)
     }
 
     var endpointURL = endpointBaseURL + endpointQueryURL;
-    console.log(endpointURL)
+    //console.log(endpointURL)
 
-    console.log("returning $.ajax")
+    //console.log("returning $.ajax")
 
     return $.ajax(
         {
@@ -1548,7 +1538,7 @@ function ajaxBio2RDF(conceptOmimURI)
 
 function ajaxLinkKeyIndicators(statementID, mode)
 {
-    console.log("enter ajaxLinkKeyIndicators")
+    //console.log("enter ajaxLinkKeyIndicators")
 
     var selectClause;
     var whereClause;
@@ -1580,7 +1570,7 @@ function ajaxLinkKeyIndicators(statementID, mode)
             "?statement :hasStatementID " + statementID + ". " +
         "}";
 
-    console.log(sparqlQuery);
+    //console.log(sparqlQuery);
 
     var queryParameters =
     {
@@ -1602,9 +1592,9 @@ function ajaxLinkKeyIndicators(statementID, mode)
     }
 
     var endpointURL = endpointBaseURL + endpointQueryURL;
-    console.log(endpointURL)
+    //console.log(endpointURL)
 
-    console.log("returning $.ajax")
+    //console.log("returning $.ajax")
 
     return $.ajax(
         {
@@ -1630,7 +1620,7 @@ function ajaxLinkKeyIndicators(statementID, mode)
 
 function handleConceptDetailJSON(conceptDetailJSON, sideBarDetails)
 {
-    console.log(conceptDetailJSON);
+    //console.log(conceptDetailJSON);
 
     var results = conceptDetailJSON["results"]["bindings"];
     var singleRowProperties = ["GHRID", "OMIMID"];
@@ -1685,7 +1675,7 @@ function handleConceptDetailJSON(conceptDetailJSON, sideBarDetails)
     //    }
     //}
 
-    console.log(sideBarDetails);
+    //console.log(sideBarDetails);
 
     return sideBarDetails
 
@@ -1714,7 +1704,7 @@ function handleBio2RDFJSON(bio2RDFJSON, sideBarDetails)
     {
         for (var property in results[row]) {
 
-            console.log(property);
+            //console.log(property);
 
             if (row == 0 && stringProperties.indexOf(property) != -1) {
 
@@ -1776,7 +1766,7 @@ function handleBio2RDFJSON(bio2RDFJSON, sideBarDetails)
         }
     }
 
-    console.log(sideBarDetails);
+    //console.log(sideBarDetails);
     return sideBarDetails;
 }
 
@@ -1806,11 +1796,11 @@ function populateSideBarConcept(sideBarDetails, clickedElement)
     var sideBarProperties = ["conceptName", "CUI", "conceptID", "definition", "prefLabel", "semType", "doID", "GHRID",
                              "icd9ID", "icd10ID", "OMIMID", "orphanetID", "snomedID", "uniprotID"];
 
-    console.log("populating sidebar")
+    //console.log("populating sidebar")
 
     for (var key in sideBarProperties)
     {
-        console.log(key)
+        //console.log(key)
         if (sideBarProperties[key] in sideBarDetails)
         {
             d3.select("#" + sideBarProperties[key]).style("margin-bottom", "2px");
@@ -2103,11 +2093,6 @@ function once(fn, context) {
     };
 }
 
-function doDoubleClickAction()
-{
-    console.log("double click registered")
-}
-
 // collapse a node
 function collapseNode(node)
 {
@@ -2343,7 +2328,7 @@ function generateSideBarCategoryLegend(categoryList)
         legendItem.style("height", String(legendItemHeight) + "px");
         legendItem.select("svg").attr("height", svgHeight);
 
-        console.log(legendItemCircle)
+        //console.log(legendItemCircle)
         legendItemCircle.attr("cx", 0.5 * svgWidth)
                         .attr("cy", 0.5 * svgHeight);
 
@@ -2417,11 +2402,11 @@ function populateConceptModal(modalDetails, clickedElement)
     var advancedModalProperties = ["clinicalFeatures", "description", "diagnosis", "inheritance", "molecularGenetics",
                                     "pathogenesis",  "populationGenetics"];
 
-    console.log("populating modal")
+    //console.log("populating modal")
 
     for (var key in modalProperties)
     {
-        console.log(key)
+        //console.log(key)
         if (modalProperties[key] in modalDetails)
         {
             d3.select("#modal" + modalProperties[key]).style("margin-bottom", "2px");
@@ -2437,12 +2422,12 @@ function populateConceptModal(modalDetails, clickedElement)
 
         var parentElement = d3.select("#modal" + property).select(function() {return this.parentNode});
 
-        console.log(modalProperties.indexOf(property))
+        //console.log(modalProperties.indexOf(property))
         var modalElement = d3.select("#modal" + property);
 
         if (modalProperties.indexOf(property) != -1)
         {
-            console.log(modalElement);
+            //console.log(modalElement);
 
             var url;
             var baseHTML;
@@ -2726,7 +2711,7 @@ function generateLinkModal(clickedElement, modalDetails)
             modalDetails = handleCitationsSentencesJSON(response, modalDetails);
 
             modalDetails = populateLinkModal(modalDetails);
-            console.log(modalDetails)
+            //console.log(modalDetails)
 
             var loadButton = d3.select("#loadSentencesButton");
             var nOfDisplayedSentences = 0;
@@ -2753,7 +2738,7 @@ function generateLinkModal(clickedElement, modalDetails)
                                     {
 
                                         buttonClickCount++;
-                                        console.log(buttonClickCount)
+                                        //console.log(buttonClickCount)
 
                                         $.when(ajaxCitationsSentences(statementID, buttonClickCount)
                                             .then(function(response)
@@ -2777,7 +2762,7 @@ function generateLinkModal(clickedElement, modalDetails)
                                                               .html(loaderspan + "All sentences loaded");
                                                 }
 
-                                                console.log(modalDetails)
+                                                //console.log(modalDetails)
                                             }))
                                     })
         })
@@ -2786,7 +2771,7 @@ function generateLinkModal(clickedElement, modalDetails)
 
 function ajaxCitationsSentences(statementID, clickCount)
 {
-    console.log("enter getCitationsSentences");
+    //console.log("enter getCitationsSentences");
 
     var sparqlLimit = 50;
 
@@ -2825,7 +2810,7 @@ function ajaxCitationsSentences(statementID, clickCount)
 
         "} LIMIT " + sparqlLimit + " OFFSET " + (sparqlLimit * clickCount);
 
-    console.log(sparqlQuery);
+    //console.log(sparqlQuery);
 
     var queryParameters =
     {
@@ -2848,9 +2833,9 @@ function ajaxCitationsSentences(statementID, clickCount)
     }
 
     var endpointURL = endpointBaseURL + endpointQueryURL;
-    console.log(endpointURL)
+    //console.log(endpointURL)
 
-    console.log("returning $.ajax")
+    //console.log("returning $.ajax")
 
     return $.ajax(
         {
